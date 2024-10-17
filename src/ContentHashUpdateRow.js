@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FaGlobe } from 'react-icons/fa';
 
 function ContentHashUpdateRow({ update, provider }) {
+    const [blockDate, setBlockDate] = useState('');
     const [blockTime, setBlockTime] = useState('');
 
     useEffect(() => {
@@ -11,10 +12,13 @@ function ContentHashUpdateRow({ update, provider }) {
                 try {
                     const block = await provider.getBlock(update.blockNumber);
                     const date = new Date(block.timestamp * 1000);
-                    setBlockTime(date.toLocaleString());
+                    setBlockDate(date.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }));
+                    setBlockTime(date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
                     return;
                 } catch (error) {
                     console.error('Error fetching block time:', error);
+                    // Wait for a random time between 0 to 1 second before retrying
+                    await new Promise(resolve => setTimeout(resolve, Math.random() * 3000));
                 }
                 tries--;
             }
@@ -28,8 +32,11 @@ function ContentHashUpdateRow({ update, provider }) {
             <div className="col-span-3 text-sm font-medium text-blue-600 truncate">
                 <a href={`https://${update.domain}.ac/`} target="_blank" rel="noopener noreferrer" className="hover:text-blue-800 transition-colors duration-300">{update.domain}</a>
             </div>
-            <div className="hidden md:block col-span-1 text-sm text-gray-500">{update.blockNumber}</div>
-            <div className="col-span-2 text-sm text-gray-500">{blockTime}</div>
+            <div className="hidden md:block col-span-1 text-sm text-gray-700">{update.blockNumber}</div>
+            <div className="col-span-2 text-sm">
+                <span className="text-gray-700">{blockDate}</span>{' '}
+                <span className="text-gray-500">{blockTime}</span>
+            </div>
             <div className="hidden md:block col-span-5 text-sm text-gray-600 break-all">{update.hashString}</div>
             <div className="col-span-1 flex items-center space-x-2">
                 <a href={`https://${update.domain}.ac/`} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors duration-300">

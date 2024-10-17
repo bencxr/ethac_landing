@@ -153,7 +153,7 @@ function App() {
         <div className="grid grid-cols-6 md:grid-cols-12 gap-4 bg-gray-100 p-4 rounded-t-lg font-medium text-gray-500 uppercase text-sm">
           <div className="col-span-3">Domain</div>
           <div className="hidden md:block col-span-1">Block #</div>
-          <div className="col-span-2">Block Time</div>
+          <div className="col-span-2">Time Confirmed</div>
           <div className="hidden md:block col-span-5">Hash</div>
           <div className="col-span-1">Link</div>
         </div>
