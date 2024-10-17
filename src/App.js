@@ -3,12 +3,13 @@ import { ethers } from 'ethers';
 import { createClient, cacheExchange, fetchExchange } from '@urql/core'
 import { Buffer } from 'buffer';
 import ContentHashUpdateRow from './ContentHashUpdateRow';
-import { FaEthereum } from 'react-icons/fa';
 import { IoMdPulse } from 'react-icons/io';
 
 function App() {
   const [provider, setProvider] = useState(null);
+  // eslint-disable-next-line
   const [account, setAccount] = useState(null);
+  // eslint-disable-next-line
   const [network, setNetwork] = useState('');
   const [contentHashUpdates, setContentHashUpdates] = useState([]);
 

@@ -26,7 +26,7 @@ function ContentHashUpdateRow({ update, provider }) {
     return (
         <div className="grid grid-cols-6 md:grid-cols-12 gap-4 p-4 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50 hover:from-gray-50 hover:to-white transition-all duration-300">
             <div className="col-span-3 text-sm font-medium text-blue-600 truncate">
-                <a href={`https://${update.domain}.ac/`} target="_blank" className="hover:text-blue-800 transition-colors duration-300">{update.domain}</a>
+                <a href={`https://${update.domain}.ac/`} target="_blank" rel="noopener noreferrer" className="hover:text-blue-800 transition-colors duration-300">{update.domain}</a>
             </div>
             <div className="hidden md:block col-span-1 text-sm text-gray-500">{update.blockNumber}</div>
             <div className="col-span-2 text-sm text-gray-500">{blockTime}</div>
