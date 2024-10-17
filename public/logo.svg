@@ -1,0 +1,35 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Stars -->
+  <circle cx="20" cy="30" r="1" fill="white"/>
+  <circle cx="50" cy="15" r="1" fill="white"/>
+  <circle cx="180" cy="40" r="1" fill="white"/>
+  <circle cx="160" cy="20" r="1" fill="white"/>
+  <circle cx="190" cy="80" r="1" fill="white"/>
+  <circle cx="30" cy="170" r="1" fill="white"/>
+  <circle cx="170" cy="160" r="1" fill="white"/>
+  
+  <!-- Moon -->
+  <circle cx="120" cy="80" r="60" fill="#CCCCCC"/>
+  <circle cx="90" cy="60" r="10" fill="#AAAAAA"/>
+  <circle cx="125" cy="110" r="15" fill="#AAAAAA"/>
+  <circle cx="135" cy="72" r="18" fill="#AAAAAA"/>
+  
+  <!-- Person -->
+  <circle cx="70" cy="140" r="15" fill="#FFD700"/> <!-- Head -->
+  <line x1="70" y1="155" x2="70" y2="180" stroke="#FFD700" stroke-width="4"/> <!-- Body -->
+  <line x1="70" y1="165" x2="50" y2="175" stroke="#FFD700" stroke-width="4"/> <!-- Left arm -->
+  <line x1="70" y1="165" x2="90" y2="155" stroke="#FFD700" stroke-width="4"/> <!-- Right arm -->
+  <line x1="70" y1="180" x2="60" y2="195" stroke="#FFD700" stroke-width="4"/> <!-- Left leg -->
+  <line x1="70" y1="180" x2="80" y2="195" stroke="#FFD700" stroke-width="4"/> <!-- Right leg -->
+  
+  <!-- Ladder -->
+  <line x1="85" y1="200" x2="110" y2="140" stroke="#FF6600" stroke-width="3"/>
+  <line x1="95" y1="200" x2="120" y2="140" stroke="#FF6600" stroke-width="3"/>
+  <line x1="85" y1="180" x2="95" y2="180" stroke="#FF6600" stroke-width="2"/>
+  <line x1="90" y1="170" x2="100" y2="170" stroke="#FF6600" stroke-width="2"/>
+  <line x1="95" y1="160" x2="105" y2="160" stroke="#FF6600" stroke-width="2"/>
+  <line x1="100" y1="150" x2="110" y2="150" stroke="#FF6600" stroke-width="2"/>
+  
+  <!-- Building block -->
+  <rect x="85" y="125" width="20" height="20" fill="#4CAF50"/>
+</svg>
