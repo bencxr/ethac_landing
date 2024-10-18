@@ -154,7 +154,7 @@ function App() {
           <div className="col-span-3">Domain</div>
           <div className="hidden md:block col-span-1">Block #</div>
           <div className="col-span-2">Time Confirmed</div>
-          <div className="hidden md:block col-span-5">Hash</div>
+          <div className="hidden md:block col-span-5">Content Hash</div>
           <div className="col-span-1">Link</div>
         </div>
         <div className="bg-white shadow-md rounded-b-lg overflow-hidden">
