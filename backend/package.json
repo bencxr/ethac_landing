@@ -16,6 +16,7 @@
     "ethers": "^6.13.4",
     "express": "^4.21.1",
     "log-timestamp": "^0.3.0",
-    "mongoose": "^8.7.2"
+    "mongoose": "^8.7.2",
+    "urql": "^4.2.0"
   }
 }
