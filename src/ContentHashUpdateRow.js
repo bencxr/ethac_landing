@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, forwardRef } from 'react';
 import { FaGlobe } from 'react-icons/fa';
 
-function ContentHashUpdateRow({ update, provider }) {
+const ContentHashUpdateRow = forwardRef(({ update, provider }, ref) => {
     const [blockDate, setBlockDate] = useState('');
     const [blockTime, setBlockTime] = useState('');
     const [url, setUrl] = useState('');
@@ -10,7 +10,8 @@ function ContentHashUpdateRow({ update, provider }) {
         const date = new Date(update.blockTimestamp);
         setBlockDate(date.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }));
         setBlockTime(date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
-        if (update.domain && update.domain.indexOf('.') === update.domain.lastIndexOf('.')) {
+
+        if (update.domain && update.domain.indexOf('.') === update.domain.lastIndexOf('.') && update.hashString.match(/^bzz:\/\//) === null) {
             setUrl(`https://${update.domain}.ac/`);
         } else {
             setUrl(`https://${update.domain}.limo/`); // .ac does not support ens subdomains because of cloudflare ssl certs
@@ -18,7 +19,7 @@ function ContentHashUpdateRow({ update, provider }) {
     }, [update]);
 
     return (
-        <div className="grid grid-cols-6 md:grid-cols-12 gap-4 p-4 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50 hover:from-gray-50 hover:to-white transition-all duration-300">
+        <div ref={ref} className="grid grid-cols-6 md:grid-cols-12 gap-4 p-4 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50 hover:from-gray-50 hover:to-white transition-all duration-300">
             <div className="col-span-3 text-sm font-medium text-blue-600 truncate">
                 <a href={`${url}`} target="_blank" rel="noopener noreferrer" className="hover:text-blue-800 transition-colors duration-300">{update.domain}</a>
             </div>
@@ -43,6 +44,6 @@ function ContentHashUpdateRow({ update, provider }) {
             </div>
         </div>
     );
-}
+});
 
 export default ContentHashUpdateRow;

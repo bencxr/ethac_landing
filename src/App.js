@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 // import { ethers } from 'ethers';
 import ContentHashUpdateRow from './ContentHashUpdateRow';
 import { IoMdPulse } from 'react-icons/io';
@@ -17,14 +17,13 @@ function App() {
 
   const apiUrl = window.location.hostname === 'localhost' ? 'http://localhost:4000' : 'https://apiplatform.eth.ac';
 
+  const observer = useRef();
+
   const getContentHashUpdates = useCallback(async () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
     try {
-      setPage(prevPage => prevPage + 1);
-
-      console.log('fetching', `${apiUrl}/content-hash-updates?page=${page}&limit=20`);
       const response = await fetch(`${apiUrl}/content-hash-updates?page=${page}&limit=20`);
       const result = await response.json();
 
@@ -37,6 +36,7 @@ function App() {
           );
           return [...prevUpdates, ...uniqueUpdates];
         });
+        setPage(prevPage => prevPage + 1);
       }
     } catch (error) {
       console.error('Error fetching content hash updates:', error);
@@ -44,6 +44,23 @@ function App() {
       setLoading(false);
     }
   }, [apiUrl, page, loading, hasMore]);
+
+  const lastElementRef = useCallback(node => {
+    if (loading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        getContentHashUpdates();
+      }
+    }, {
+      root: null,
+      rootMargin: '0px',
+      threshold: 1.0
+    });
+    if (node) {
+      observer.current.observe(node);
+    }
+  }, [loading, hasMore, getContentHashUpdates]);
 
   useEffect(() => {
     let provider;
@@ -59,33 +76,15 @@ function App() {
         const network = await provider.getNetwork();
         setNetwork(network.name);
       }
-        */
+      */
       setProvider(provider);
     };
 
     initializeProvider();
-
     getContentHashUpdates();
-
-    // Remove the interval-based fetching
-    // const intervalId = setInterval(getContentHashUpdates, 5000);
-    // return () => clearInterval(intervalId);
+    // run it once on load only
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - 100
-      ) {
-        getContentHashUpdates();
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [getContentHashUpdates]);
 
   return (
     <div className="container mx-auto px-4 font-sans flex flex-col min-h-screen">
@@ -103,7 +102,7 @@ function App() {
               <img src="./logo.svg" alt="Logo" width="80" height="80" />
               <div>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
-                  Eth.ac <span className="font-light">Decentralized Web Scanner</span>
+                  Eth.ac <span className="font-light">Decentralized Web Explorer</span>
                 </h1>
                 <p className="text-xl text-white mt-2 opacity-80 font-light tracking-wide">Delivering the latest from the Decentralized Web</p>
               </div>
@@ -134,17 +133,22 @@ function App() {
           <div className="col-span-1">Link</div>
         </div>
         <div className="bg-white shadow-md rounded-b-lg overflow-hidden">
-          {contentHashUpdates.map((update) => (
-            <ContentHashUpdateRow key={update.id} update={update} provider={provider} />
+          {contentHashUpdates.map((update, index) => (
+            <ContentHashUpdateRow
+              key={update.id}
+              update={update}
+              provider={provider}
+              ref={index === contentHashUpdates.length - 1 ? lastElementRef : null}
+            />
           ))}
           {loading && (
             <div className="text-center py-4">
-              <p>Scroll to load more...</p>
+              <p>Loading more...</p>
             </div>
           )}
           {!hasMore && (
             <div className="text-center py-4">
-              <p></p>
+              <p>No more updates to load</p>
             </div>
           )}
         </div>
