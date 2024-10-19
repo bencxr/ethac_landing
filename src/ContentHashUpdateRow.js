@@ -6,11 +6,10 @@ function ContentHashUpdateRow({ update, provider }) {
     const [blockTime, setBlockTime] = useState('');
 
     useEffect(() => {
-        console.log(update);
         const date = new Date(update.blockTimestamp);
         setBlockDate(date.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }));
         setBlockTime(date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
-    }, []);
+    }, [update]);
 
     return (
         <div className="grid grid-cols-6 md:grid-cols-12 gap-4 p-4 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50 hover:from-gray-50 hover:to-white transition-all duration-300">

@@ -11,6 +11,7 @@ function App() {
   const [network, setNetwork] = useState('');
 
   const [contentHashUpdates, setContentHashUpdates] = useState([]);
+  const apiUrl = window.location.hostname === 'localhost' ? 'http://localhost:4000' : 'https://apiplatform.eth.ac';
 
   useEffect(() => {
     let provider;
@@ -33,7 +34,7 @@ function App() {
     initializeProvider();
 
     const getContentHashUpdates = async () => {
-      const response = await fetch('http://localhost:4000/content-hash-updates');
+      const response = await fetch(apiUrl + '/content-hash-updates');
       const result = await response.json();
       setContentHashUpdates(result.contentHashUpdates);
     };
@@ -45,7 +46,7 @@ function App() {
 
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [apiUrl]);
 
   return (
     <div className="container mx-auto px-4 font-sans">
