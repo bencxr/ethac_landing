@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 import ContentHashUpdateRow from './ContentHashUpdateRow';
 import { IoMdPulse } from 'react-icons/io';
 
@@ -13,7 +13,7 @@ function App() {
   const [contentHashUpdates, setContentHashUpdates] = useState([]);
 
   useEffect(() => {
-    let provider = new ethers.JsonRpcProvider('https://sleek-cool-paper.quiknode.pro/b25a8c99595287e5d8c4f84eed1ea8fc4d3ca95f', null, { staticNetwork: ethers.Network.from(1) });
+    let provider;
     const initializeProvider = async () => {
       /*
       if (window.ethereum) {
