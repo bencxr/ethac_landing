@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 // import { ethers } from 'ethers';
 import ContentHashUpdateRow from './ContentHashUpdateRow';
 import { IoMdPulse } from 'react-icons/io';
@@ -11,7 +11,39 @@ function App() {
   const [network, setNetwork] = useState('');
 
   const [contentHashUpdates, setContentHashUpdates] = useState([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
   const apiUrl = window.location.hostname === 'localhost' ? 'http://localhost:4000' : 'https://apiplatform.eth.ac';
+
+  const getContentHashUpdates = useCallback(async () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+    try {
+      setPage(prevPage => prevPage + 1);
+
+      console.log('fetching', `${apiUrl}/content-hash-updates?page=${page}&limit=20`);
+      const response = await fetch(`${apiUrl}/content-hash-updates?page=${page}&limit=20`);
+      const result = await response.json();
+
+      if (result.contentHashUpdates.length === 0) {
+        setHasMore(false);
+      } else {
+        setContentHashUpdates(prevUpdates => {
+          const uniqueUpdates = result.contentHashUpdates.filter(
+            update => !prevUpdates.some(prevUpdate => prevUpdate.id === update.id)
+          );
+          return [...prevUpdates, ...uniqueUpdates];
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching content hash updates:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [apiUrl, page, loading, hasMore]);
 
   useEffect(() => {
     let provider;
@@ -33,23 +65,30 @@ function App() {
 
     initializeProvider();
 
-    const getContentHashUpdates = async () => {
-      const response = await fetch(apiUrl + '/content-hash-updates');
-      const result = await response.json();
-      setContentHashUpdates(result.contentHashUpdates);
-    };
-
     getContentHashUpdates();
 
-    // Set up an interval to fetch updates every 5 seconds
-    const intervalId = setInterval(getContentHashUpdates, 5000);
+    // Remove the interval-based fetching
+    // const intervalId = setInterval(getContentHashUpdates, 5000);
+    // return () => clearInterval(intervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    // Clean up the interval on component unmount
-    return () => clearInterval(intervalId);
-  }, [apiUrl]);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 100
+      ) {
+        getContentHashUpdates();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [getContentHashUpdates]);
 
   return (
-    <div className="container mx-auto px-4 font-sans">
+    <div className="container mx-auto px-4 font-sans flex flex-col min-h-screen">
       <header className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 rounded-b-2xl shadow-xl p-8 mb-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-black opacity-10 z-0"></div>
         <div className="absolute top-0 left-0 w-full h-full">
@@ -86,7 +125,7 @@ function App() {
         </div>
       </header>
 
-      <div className="overflow-x-auto mt-8">
+      <div className="flex-grow overflow-x-auto mt-8">
         <div className="grid grid-cols-6 md:grid-cols-12 gap-4 bg-gray-100 p-4 rounded-t-lg font-medium text-gray-500 uppercase text-sm">
           <div className="col-span-3">Domain</div>
           <div className="hidden md:block col-span-1">Block #</div>
@@ -98,6 +137,16 @@ function App() {
           {contentHashUpdates.map((update) => (
             <ContentHashUpdateRow key={update.id} update={update} provider={provider} />
           ))}
+          {loading && (
+            <div className="text-center py-4">
+              <p>Scroll to load more...</p>
+            </div>
+          )}
+          {!hasMore && (
+            <div className="text-center py-4">
+              <p></p>
+            </div>
+          )}
         </div>
       </div>
     </div>
