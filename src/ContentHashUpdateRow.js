@@ -4,17 +4,23 @@ import { FaGlobe } from 'react-icons/fa';
 function ContentHashUpdateRow({ update, provider }) {
     const [blockDate, setBlockDate] = useState('');
     const [blockTime, setBlockTime] = useState('');
+    const [url, setUrl] = useState('');
 
     useEffect(() => {
         const date = new Date(update.blockTimestamp);
         setBlockDate(date.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }));
         setBlockTime(date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+        if (update.domain && update.domain.indexOf('.') === update.domain.lastIndexOf('.')) {
+            setUrl(`https://${update.domain}.ac/`);
+        } else {
+            setUrl(`https://${update.domain}.limo/`); // .ac does not support ens subdomains because of cloudflare ssl certs
+        }
     }, [update]);
 
     return (
         <div className="grid grid-cols-6 md:grid-cols-12 gap-4 p-4 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50 hover:from-gray-50 hover:to-white transition-all duration-300">
             <div className="col-span-3 text-sm font-medium text-blue-600 truncate">
-                <a href={`https://${update.domain}.ac/`} target="_blank" rel="noopener noreferrer" className="hover:text-blue-800 transition-colors duration-300">{update.domain}</a>
+                <a href={`${url}`} target="_blank" rel="noopener noreferrer" className="hover:text-blue-800 transition-colors duration-300">{update.domain}</a>
             </div>
             <div className="hidden md:block col-span-1 text-sm text-gray-700">{update.blockNumber}</div>
             <div className="col-span-2 text-sm">
@@ -23,7 +29,7 @@ function ContentHashUpdateRow({ update, provider }) {
             </div>
             <div className="hidden md:block col-span-5 text-sm text-gray-600 break-all">{update.hashString}</div>
             <div className="col-span-1 flex items-center space-x-2">
-                <a href={`https://${update.domain}.ac/`} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors duration-300">
+                <a href={`${url}`} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors duration-300">
                     <FaGlobe className="h-5 w-5" />
                 </a>
                 <a href={`https://etherscan.io/tx/${update.transactionID}`} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors duration-300">

@@ -61,7 +61,7 @@ const getContentHashUpdates = async (numToPoll = env.POLL_SCAN_NUM) => {
             hashString: contentHashHexToString(contenthashChanged.hash)
         };
 
-        if (thisContentHashUpdate.hashString && thisContentHashUpdate.domain.match(/^[a-zA-Z0-9\.]+.eth$/)) {
+        if (thisContentHashUpdate.hashString && thisContentHashUpdate.domain.match(/^[a-zA-Z0-9\-\.]+.eth$/)) {
             const exists = await ContentHashUpdates.exists({ id: thisContentHashUpdate.id });
             if (exists !== null) {
                 // console.log('Already exists:', thisContentHashUpdate.id);
