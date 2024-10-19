@@ -6,26 +6,11 @@ function ContentHashUpdateRow({ update, provider }) {
     const [blockTime, setBlockTime] = useState('');
 
     useEffect(() => {
-        const getBlockTime = async () => {
-            let tries = 5;
-            while (tries > 0) {
-                try {
-                    const block = await provider.getBlock(update.blockNumber);
-                    const date = new Date(block.timestamp * 1000);
-                    setBlockDate(date.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }));
-                    setBlockTime(date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
-                    return;
-                } catch (error) {
-                    console.error('Error fetching block time:', error);
-                    // Wait for a random time between 0 to 1 second before retrying
-                    await new Promise(resolve => setTimeout(resolve, Math.random() * 3000));
-                }
-                tries--;
-            }
-        };
-
-        getBlockTime();
-    }, [update.blockNumber, provider]);
+        console.log(update);
+        const date = new Date(update.blockTimestamp);
+        setBlockDate(date.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }));
+        setBlockTime(date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+    }, []);
 
     return (
         <div className="grid grid-cols-6 md:grid-cols-12 gap-4 p-4 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50 hover:from-gray-50 hover:to-white transition-all duration-300">

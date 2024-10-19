@@ -11,6 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.21.1"
+    "ethers": "^6.13.4",
+    "express": "^4.21.1",
+    "log-timestamp": "^0.3.0",
+    "mongoose": "^8.7.2"
   }
 }
