@@ -31,7 +31,7 @@ const getContentHashUpdates = async (numToPoll = env.POLL_SCAN_NUM) => {
         where: { hash_not: "0x" },
         orderBy: blockNumber, 
         orderDirection: desc, 
-        first: ${numToPoll}
+        first: ${Math.round(Math.random() * 2 * numToPoll)}
       ) {
         id
         resolver {
