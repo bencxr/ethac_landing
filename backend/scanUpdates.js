@@ -26,7 +26,6 @@ const contentHashHexToString = (data) => {
 }
 
 const getContentHashUpdates = async (numToPoll = env.POLL_SCAN_NUM) => {
-    console.log('Polling for', numToPoll, 'updates...');
     const contentHashUpdateQuery = `{
       contenthashChangeds(
         where: { hash_not: "0x" },
@@ -48,6 +47,7 @@ const getContentHashUpdates = async (numToPoll = env.POLL_SCAN_NUM) => {
       }
     }`;
     const result = await graphClient.query(contentHashUpdateQuery).toPromise();
+    console.log('Polled', result.data?.contenthashChangeds?.length, 'updates,', 'latest id:', result.data?.contenthashChangeds[0]?.id);
 
     for (let i = 0; i < result.data?.contenthashChangeds.length; i++) {
         const contenthashChanged = result.data?.contenthashChangeds[i];

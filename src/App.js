@@ -104,7 +104,7 @@ function App() {
                 <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
                   Eth.ac <span className="font-light">Decentralized Web Explorer</span>
                 </h1>
-                <p className="text-xl text-white mt-2 opacity-80 font-light tracking-wide">Delivering the latest from the Decentralized Web</p>
+                <p className="text-xl text-white mt-2 opacity-80 font-light tracking-wide">Scanning for the latest from the Decentralized Web</p>
               </div>
             </div>
             <div className="hidden md:flex items-center space-x-4">
