@@ -31,7 +31,7 @@ const getContentHashUpdates = async (numToPoll = env.POLL_SCAN_NUM) => {
         where: { hash_not: "0x" },
         orderBy: blockNumber, 
         orderDirection: desc, 
-        first: ${Math.round(Math.random() * 2 * numToPoll)}
+        first: ${numToPoll}
       ) {
         id
         resolver {
@@ -46,7 +46,7 @@ const getContentHashUpdates = async (numToPoll = env.POLL_SCAN_NUM) => {
         hash
       }
     }`;
-    const result = await graphClient.query(contentHashUpdateQuery).toPromise();
+    const result = await graphClient.query(contentHashUpdateQuery, null, { requestPolicy: 'network-only' }).toPromise();
     console.log('Polled', result.data?.contenthashChangeds?.length, 'updates,', 'latest id:', result.data?.contenthashChangeds[0]?.id);
 
     for (let i = 0; i < result.data?.contenthashChangeds.length; i++) {
