@@ -27,16 +27,16 @@ const ContentHashUpdateRow = forwardRef<HTMLDivElement, {
     }, [update]);
 
     return (
-        <div ref={ref} className="grid grid-cols-6 md:grid-cols-12 gap-4 p-4 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50 hover:from-gray-50 hover:to-white transition-all duration-300">
+        <div ref={ref} className="grid grid-cols-6 lg:grid-cols-12 gap-4 p-4 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50 hover:from-gray-50 hover:to-white transition-all duration-300">
             <div className="col-span-3 text-sm font-medium text-blue-600 truncate">
                 <a href={`${url}`} target="_blank" rel="noopener noreferrer" className="hover:text-blue-800 transition-colors duration-300">{update.domain}</a>
             </div>
-            <div className="hidden md:block col-span-1 text-sm text-gray-700">{update.blockNumber}</div>
+            <div className="hidden lg:block col-span-1 text-sm text-gray-700">{update.blockNumber}</div>
             <div className="col-span-2 text-sm">
                 <span className="text-gray-700">{blockDate}</span>{' '}
                 <span className="text-gray-500">{blockTime}</span>
             </div>
-            <div className="hidden md:block col-span-5 text-sm text-gray-600 break-all">{update.hashString}</div>
+            <div className="hidden lg:block col-span-5 text-sm text-gray-600 break-all">{update.hashString}</div>
             <div className="col-span-1 flex items-center space-x-2">
                 <a href={`${url}`} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors duration-300">
                     <FaGlobe className="h-5 w-5" />
