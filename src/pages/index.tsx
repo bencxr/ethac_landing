@@ -93,7 +93,7 @@ const Home: NextPage = () => {
               </div>
               <div className="hidden lg:flex space-x-4">
                 <div className="flex justify-end mt-[50px]">
-                  <ConnectButton />
+                  <ConnectButton chainStatus="icon" />
                 </div>
                 {network && (
                   <div className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-full px-4 py-2 text-sm text-white">
