@@ -1,7 +1,15 @@
 import React, { useEffect, useState, forwardRef } from 'react';
 import { FaGlobe } from 'react-icons/fa';
 
-const ContentHashUpdateRow = forwardRef(({ update, provider }, ref) => {
+const ContentHashUpdateRow = forwardRef<HTMLDivElement, {
+    update: {
+        blockTimestamp: number;
+        domain: string;
+        hashString: string;
+        blockNumber: number;
+        transactionID: string;
+    };
+}>(({ update }, ref) => {
     const [blockDate, setBlockDate] = useState('');
     const [blockTime, setBlockTime] = useState('');
     const [url, setUrl] = useState('');

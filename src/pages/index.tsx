@@ -1,23 +1,27 @@
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import type { NextPage } from 'next';
+import '../styles/Home.module.css';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-// import { ethers } from 'ethers';
-import ContentHashUpdateRow from './ContentHashUpdateRow';
+import ContentHashUpdateRow from '../components/ContentHashUpdateRow';
 import { IoMdPulse } from 'react-icons/io';
 
-function App() {
-  const [provider, setProvider] = useState(null);
+const Home: NextPage = () => {
   // eslint-disable-next-line
-  const [account, setAccount] = useState(null);
+  const [account, setAccount] = useState<string | null>(null);
   // eslint-disable-next-line
   const [network, setNetwork] = useState('');
 
-  const [contentHashUpdates, setContentHashUpdates] = useState([]);
+  const [contentHashUpdates, setContentHashUpdates] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  const apiUrl = window.location.hostname === 'localhost' ? 'http://localhost:4000' : 'https://apiplatform.eth.ac';
+  let apiUrl = 'https://apiplatform.eth.ac';
+  if ((typeof window !== "undefined") && window.location.hostname === 'localhost') {
+    apiUrl = 'http://localhost:4000';
+  }
 
-  const observer = useRef();
+  const observer = useRef<IntersectionObserver | null>();
 
   const getContentHashUpdates = useCallback(async () => {
     if (loading || !hasMore) return;
@@ -30,12 +34,13 @@ function App() {
       if (result.contentHashUpdates.length === 0) {
         setHasMore(false);
       } else {
-        setContentHashUpdates(prevUpdates => {
+        const newUpdates = (prevUpdates: any[]) => {
           const uniqueUpdates = result.contentHashUpdates.filter(
-            update => !prevUpdates.some(prevUpdate => prevUpdate.id === update.id)
+            (update: any) => !prevUpdates.some(prevUpdate => prevUpdate.id === update.id)
           );
           return [...prevUpdates, ...uniqueUpdates];
-        });
+        }
+        setContentHashUpdates(newUpdates);
         setPage(prevPage => prevPage + 1);
       }
     } catch (error) {
@@ -45,7 +50,7 @@ function App() {
     }
   }, [apiUrl, page, loading, hasMore]);
 
-  const lastElementRef = useCallback(node => {
+  const lastElementRef = useCallback((node: HTMLElement | null) => {
     if (loading) return;
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver(entries => {
@@ -63,24 +68,6 @@ function App() {
   }, [loading, hasMore, getContentHashUpdates]);
 
   useEffect(() => {
-    let provider;
-    const initializeProvider = async () => {
-      /*
-      if (window.ethereum) {
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        provider = new ethers.BrowserProvider(window.ethereum);
-
-        const signer = await provider.getSigner();
-        setAccount(signer.address);
-
-        const network = await provider.getNetwork();
-        setNetwork(network.name);
-      }
-      */
-      setProvider(provider);
-    };
-
-    initializeProvider();
     getContentHashUpdates();
     // run it once on load only
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -123,6 +110,7 @@ function App() {
           )}
         </div>
       </header>
+      <ConnectButton />
 
       <div className="flex-grow overflow-x-auto mt-8">
         <div className="grid grid-cols-6 md:grid-cols-12 gap-4 bg-gray-100 p-4 rounded-t-lg font-medium text-gray-500 uppercase text-sm">
@@ -137,7 +125,6 @@ function App() {
             <ContentHashUpdateRow
               key={update.id}
               update={update}
-              provider={provider}
               ref={index === contentHashUpdates.length - 1 ? lastElementRef : null}
             />
           ))}
@@ -155,6 +142,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
-export default App;
+export default Home;
