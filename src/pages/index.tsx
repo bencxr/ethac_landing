@@ -3,18 +3,25 @@ import type { NextPage } from 'next';
 import '../styles/Home.module.css';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import ContentHashUpdateRow from '../components/ContentHashUpdateRow';
-import { IoMdPulse } from 'react-icons/io';
+import { IoMdPulse } from 'react-icons/io'; import {
+  useAccount,
+  useBalance,
+  useConnect,
+  useWalletClient
+} from "wagmi";
+import { ethers, formatUnits } from "ethers";
+import { PushAPI, CONSTANTS } from '@pushprotocol/restapi';
+import { useEthersSigner } from './ethers';
 
 const Home: NextPage = () => {
-  // eslint-disable-next-line
-  const [account, setAccount] = useState<string | null>(null);
-  // eslint-disable-next-line
-  const [network, setNetwork] = useState('');
-
   const [contentHashUpdates, setContentHashUpdates] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [balance, setBalance] = useState("");
+  const signer = useEthersSigner();
+
+  const { address, chainId, status } = useAccount();
 
   let apiUrl = 'https://apiplatform.eth.ac';
   if ((typeof window !== "undefined") && window.location.hostname === 'localhost') {
@@ -73,6 +80,36 @@ const Home: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const balanceResult = useBalance({
+    address
+  });
+  useEffect(() => {
+    if (balanceResult.data) {
+      setBalance(formatUnits(balanceResult.data.value, "ether").replace(/(\.\d{2})\d+/, '$1'));
+    }
+  }, [balanceResult]);
+
+  const preparePush = async () => {
+    console.log("preparePush");
+    const user = await PushAPI.initialize(signer, {
+      env: CONSTANTS.ENV.PROD,
+    });
+    console.log("user", user);
+    const info = await user.info();
+    console.log("info", info);
+    const response = await user.notification.subscribe(
+      `eip155:1:0xb4d8C78e7e032ee553DaE2747001c68329e22AAB`
+    );
+    console.log("response", response);
+  }
+
+  const [isClient, setIsClient] = useState(false)
+
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   return (
     <div className="container mx-auto px-4 font-sans flex flex-col min-h-screen">
       <header className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 rounded-b-2xl shadow-xl p-4 relative overflow-hidden">
@@ -95,17 +132,22 @@ const Home: NextPage = () => {
                 <div className="flex justify-end mt-[50px]">
                   <ConnectButton chainStatus="icon" />
                 </div>
-                {network && (
-                  <div className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-full px-4 py-2 text-sm text-white">
-                    <span className="font-medium">Network:</span> {network}
-                  </div>
-                )}
               </div>
             </div>
           </div>
-          {account && (
+          {isClient && address && (
             <div className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-full px-4 py-2 text-sm text-white">
-              <span className="font-medium">Account:</span> {account.slice(0, 6)}...{account.slice(-4)}
+              <span className="font-medium">Address:</span> {address}
+              <br />
+              <span className="font-medium">BalanceResult:</span> {balanceResult.data?.formatted}
+              <br />
+              <span className="font-medium">Balance:</span> {balance}
+              <br />
+              <span className="font-medium">ChainID:</span> {chainId}
+              <br />
+              <span className="font-medium">Status:</span> {status}
+              <br />
+              <a href="#" onClick={preparePush}>Push</a>
             </div>
           )}
         </div>
