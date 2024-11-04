@@ -10,13 +10,15 @@ const account = privateKeyToAccount(`0x${privateKey}`);
 const bundlerUrl = process.env.NEXT_PUBLIC_BICONOMY_BUNDLER_URL;
 const paymasterUrl = process.env.NEXT_PUBLIC_BICONOMY_PAYMASTER_URL;
 
+// WARNING this code is highly sensitive to the bundler and paymaster urls
+// I could only get this bundlerURL to work: NEXT_PUBLIC_BICONOMY_BUNDLER_URL=https://sdk-relayer.staging.biconomy.io/api/v3/84532/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44
+
 export default function Biconomy() {
 
     const [smartAccountAddress, setSmartAccountAddress] = useState<string | null>(null);
     const [nexusClient, setNexusClient] = useState<NexusClient | null>(null);
 
     const setup = async () => {
-        console.log("Chain Id: ", baseSepolia.id);
         const newNexusClient = await createNexusClient({
             signer: account,
             chain: baseSepolia,
@@ -36,7 +38,7 @@ export default function Biconomy() {
         const hash = await nexusClient.sendTransaction({
             calls: [{
                 to: '0xF15A780336068B58997bFd4640F008349c27636C',
-                value: parseEther('0.0001')
+                value: parseEther('0.0002')
             }],
 
         });
