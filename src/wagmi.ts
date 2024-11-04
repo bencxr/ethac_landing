@@ -9,8 +9,8 @@ import {
 } from 'wagmi/chains';
 
 export const config = getDefaultConfig({
-  appName: 'RainbowKit App',
-  projectId: 'YOUR_PROJECT_ID',
+  appName: 'EthAC',
+  projectId: '52b28e2efad8453063f0e7842b0d5783',
   chains: [
     mainnet,
     polygon,
