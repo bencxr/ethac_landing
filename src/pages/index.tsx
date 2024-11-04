@@ -1,9 +1,15 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+'use client'
+
 import type { NextPage } from 'next';
 import '../styles/Home.module.css';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import ContentHashUpdateRow from '../components/ContentHashUpdateRow';
 import { IoMdPulse } from 'react-icons/io';
+import { DynamicWidget, useDynamicContext, Wallet, WalletConnector } from '@dynamic-labs/sdk-react-core';
+import { useAccount, useBalance, useDisconnect } from 'wagmi';
+import { formatUnits, parseEther } from 'viem';
+import { isZeroDevConnector } from '@dynamic-labs/ethereum-aa';
+import { isEthereumWallet } from '@dynamic-labs/ethereum';
 
 const Home: NextPage = () => {
   // eslint-disable-next-line
@@ -73,6 +79,70 @@ const Home: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { address, chainId, status } = useAccount();
+
+  const balanceResult = useBalance({ address });
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  const { primaryWallet } = useDynamicContext();
+  const [signerAddress, setSignerAddress] = useState("");
+
+  useEffect(() => {
+    const getSignerAddress = async () => {
+
+      if (!primaryWallet) {
+        setSignerAddress("");
+        return;
+      }
+
+      const {
+        connector,
+        address: smartWalletAddress, // This is your smart wallet address
+      } = primaryWallet;
+
+      if (!isZeroDevConnector(connector)) {
+        return;
+      }
+
+      const signerConnector = connector.getEOAConnector();
+
+      if (!signerConnector) {
+        return;
+      }
+
+      // This is the signer address
+      const signingAddress = await signerConnector.getAddress();
+
+      setSignerAddress(signingAddress || "");
+
+    }
+    getSignerAddress();
+  }, [primaryWallet]);
+
+  const sendTransaction = async () => {
+    const address = "0xF15A780336068B58997bFd4640F008349c27636C";
+    const amount = "0.00025";
+
+    if (!primaryWallet || !isEthereumWallet(primaryWallet)) return null;
+
+    const publicClient = await primaryWallet.getPublicClient();
+    const walletClient = await primaryWallet.getWalletClient();
+
+    const transaction = {
+      to: address,
+      value: amount ? parseEther(amount) : undefined,
+    };
+
+    console.log("here1");
+    const hash = await walletClient.sendTransaction(transaction);
+    console.log("here2");
+    console.log(hash);
+  }
+
   return (
     <div className="container mx-auto px-4 font-sans flex flex-col min-h-screen">
       <header className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 rounded-b-2xl shadow-xl p-4 relative overflow-hidden">
@@ -87,13 +157,32 @@ const Home: NextPage = () => {
                 <p className="text-xl text-white mt-2 opacity-80 font-light tracking-wide">Scanning for the latest from the Decentralized Web</p>
               </div>
             </div>
+            {isClient && (
+
+              <div className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-full px-4 py-2 text-sm text-white">
+                <span className="font-medium">Address:</span> {address}
+                <br />
+                <span className="font-medium">Signer address:</span> {signerAddress}
+                <br />
+                <span className="font-medium">BalanceResult:</span> {balanceResult.data?.formatted}
+                <br />
+                <span className="font-medium">ChainID:</span> {chainId}
+                <br />
+                <span className="font-medium">Status:</span> {status}
+                <br />
+                <button onClick={sendTransaction}>Send Transaction</button>
+              </div>
+
+            )}
             <div>
               <div className="hidden lg:flex items-center justify-end pr-3 pt-3">
                 <IoMdPulse className="text-white text-3xl animate-pulse" />
               </div>
               <div className="hidden lg:flex space-x-4">
                 <div className="flex justify-end mt-[50px]">
-                  <ConnectButton chainStatus="icon" />
+                  {isClient && (
+                    <DynamicWidget />
+                  )}
                 </div>
                 {network && (
                   <div className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-full px-4 py-2 text-sm text-white">
@@ -103,11 +192,6 @@ const Home: NextPage = () => {
               </div>
             </div>
           </div>
-          {account && (
-            <div className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-full px-4 py-2 text-sm text-white">
-              <span className="font-medium">Account:</span> {account.slice(0, 6)}...{account.slice(-4)}
-            </div>
-          )}
         </div>
       </header>
 
