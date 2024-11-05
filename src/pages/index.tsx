@@ -170,7 +170,7 @@ const Home: NextPage = () => {
                 <br />
                 <span className="font-medium">Status:</span> {status}
                 <br />
-                <button onClick={sendTransaction}>Send Transaction</button>
+                <button onClick={sendTransaction} className="font-bold underline">Send Test Transaction</button>
               </div>
 
             )}

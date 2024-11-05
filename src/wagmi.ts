@@ -1,3 +1,4 @@
+'use client';
 import {
   arbitrum,
   base,
@@ -11,9 +12,10 @@ import { createConfig } from 'wagmi';
 import { http } from 'viem';
 
 export const config = createConfig({
-  chains: [mainnet],
+  chains: [base, mainnet],
   multiInjectedProviderDiscovery: false,
   transports: {
+    [base.id]: http(),
     [mainnet.id]: http(),
   },
 });

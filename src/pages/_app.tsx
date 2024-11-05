@@ -21,7 +21,6 @@ export default function App({ Component, pageProps }: AppProps) {
       settings={{
         // Find your environment id at https://app.dynamic.xyz/dashboard/developer
         environmentId: "b381b0ae-e01d-4414-912a-c80ac3452d2b",
-        apiBaseUrl: 'https://authed.eth.ac/api/v0',
         walletConnectors: [EthereumWalletConnectors, ZeroDevSmartWalletConnectors],
       }}
     >
