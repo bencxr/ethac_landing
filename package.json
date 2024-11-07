@@ -8,10 +8,16 @@
     "start": "next start"
   },
   "dependencies": {
+    "@biconomy/account": "^4.5.7",
     "@biconomy/sdk": "^0.0.8",
     "@rainbow-me/rainbowkit": "^2.2.0",
     "@rhinestone/module-sdk": "^0.1.28",
     "@tanstack/react-query": "^5.55.3",
+    "@web3auth/account-abstraction-provider": "^9.3.1",
+    "@web3auth/auth-adapter": "^9.3.0",
+    "@web3auth/default-evm-adapter": "^9.3.0",
+    "@web3auth/ethereum-provider": "^9.3.0",
+    "@web3auth/modal": "^9.3.2",
     "ethers": "^6.13.4",
     "next": "^14.2.10",
     "react": "^18.3.1",
@@ -26,6 +32,6 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
-    "typescript": "5.5.2"
+    "typescript": "^5.5.2"
   }
 }
