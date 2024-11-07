@@ -33,34 +33,37 @@ export default function Biconomy() {
         console.log("Smart account address: ", smartAccountAddress);
     };
 
+    const [userOpHash, setUserOpHash] = useState<string>("");
+    const [txHash, setTxHash] = useState<string>("");
     const sendGaslessTransaction = async () => {
         if (!nexusClient) return;
-        const hash = await nexusClient.sendTransaction({
+        const userOpHash = await nexusClient.sendUserOperation({
             calls: [{
                 to: '0xF15A780336068B58997bFd4640F008349c27636C',
                 value: parseEther('0.0002')
             }],
 
         });
-        console.log("Transaction hash: ", hash);
+        console.log("User Op Hash: ", userOpHash);
+        setUserOpHash(userOpHash);
+        const receipt = await nexusClient.waitForUserOperationReceipt({ hash: userOpHash });
+        console.log("Receipt: ", receipt);
+        setTxHash(receipt.receipt.transactionHash);
     }
 
     useEffect(() => {
         setup();
     }, []);
 
-    /*
-    const hash = await nexusClient.sendTransaction({
-        calls:
-            [{ to: '0xf5715961C550FC497832063a98eA34673ad7C816', value: parseEther('0.0001') }]
-    },
-    );
-    console.log("Transaction hash: ", hash)
-    const receipt = await nexusClient.waitForTransactionReceipt({ hash });
-    */
-
-    return <div>Biconomy
+    return <div>
+        Web3Auth
+        <br />
+        <hr />
+        Biconomy
         {smartAccountAddress ? <div>Smart account address: {smartAccountAddress}</div> : <div>Loading...</div>}
         <button onClick={sendGaslessTransaction}>Send gasless transaction</button>
+        <hr />
+        {userOpHash ? <div>User Op Hash: {userOpHash}</div> : <div>No user op hash</div>}
+        {txHash ? <div>Transaction hash: {txHash}</div> : <div>No transaction hash</div>}
     </div>;
 }
